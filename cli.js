@@ -21,13 +21,15 @@ Options:
   -e, --error <level>      Error correction level: L, M, Q, H (default: H)
   -d, --dark <color>       Dark color (default: #000000)
   -l, --light <color>      Light color (default: #FFFFFF)
+  -f, --format <type>      Output format: png, svg (default: auto-detect from extension)
   -h, --help               Show this help message
 
 Examples:
   node cli.js "https://example.com"
   node cli.js "Hello World" hello.png
-  node cli.js "https://example.com" qr.png --width 600 --margin 4
+  node cli.js "https://example.com" qr.svg --width 600 --margin 4
   node cli.js "Test" test.png --error M --dark "#FF0000"
+  node cli.js "GitHub" github --format svg
   `);
 }
 
@@ -88,6 +90,17 @@ function parseArguments(args) {
         if (nextArg) {
           config.customConfig.color = config.customConfig.color || {};
           config.customConfig.color.light = nextArg;
+          i++;
+        }
+        break;
+      case '-f':
+      case '--format':
+        if (nextArg && ['png', 'svg'].includes(nextArg.toLowerCase())) {
+          const format = nextArg.toLowerCase();
+          // Auto-adjust output path if no extension provided
+          if (!config.outputPath.includes('.')) {
+            config.outputPath += `.${format}`;
+          }
           i++;
         }
         break;
