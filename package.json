@@ -1,0 +1,39 @@
+{
+  "name": "qr-code-generator",
+  "version": "1.0.0",
+  "description": "A robust and flexible QR code generator for Node.js with themes, presets, and CLI support",
+  "main": "generate-png.js",
+  "bin": {
+    "qr-generate": "./cli.js"
+  },
+  "scripts": {
+    "start": "node generate-png.js",
+    "generate": "node cli.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "qr",
+    "qrcode",
+    "generator",
+    "barcode",
+    "png",
+    "cli"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/qr-code-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/qr-code-generator/issues"
+  },
+  "homepage": "https://github.com/yourusername/qr-code-generator#readme"
+}
