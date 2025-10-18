@@ -1,6 +1,7 @@
 // generate-png.js - Main QR Code Generator
 const QRCode = require('qrcode');
 const config = require('./config');
+const fs = require('fs').promises;
 const { validateParameters, ensureDirectoryExists, getFileInfo, isValidUrl, formatConfig } = require('./utils');
 
 /**
@@ -12,7 +13,7 @@ const { validateParameters, ensureDirectoryExists, getFileInfo, isValidUrl, form
  */
 async function generateQRCode(text, outputPath, customConfig = {}) {
   // Detect format from file extension
-  const isSVG = outputPath.toLowerCase().endsWith(".svg");
+  const isSVG = outputPath.toLowerCase().endsWith('.svg');
 
   // Merge with default configuration and set type
   const qrConfig = { ...config.defaults, ...customConfig, type: isSVG ? 'svg' : 'png' };
@@ -38,7 +39,6 @@ async function generateQRCode(text, outputPath, customConfig = {}) {
     if (isSVG) {
       // Generate SVG
       const svgString = await QRCode.toString(text, qrConfig);
-      const fs = require('fs').promises;
       await fs.writeFile(outputPath, svgString);
     } else {
       // Generate PNG
