@@ -5,6 +5,7 @@ A robust and flexible QR code generator for Node.js with support for various cus
 ## Features
 
 - 🔲 **Easy QR Code Generation** - Simple API for generating QR codes
+- 📄 **Multiple Formats** - Support for PNG and SVG output formats
 - 🎨 **Customizable Themes** - Pre-built color themes (default, dark, blue, green, red, purple)
 - 📏 **Size Presets** - Quick size configurations (small, medium, large, xlarge)
 - 🛡️ **Error Correction** - Configurable error correction levels (L, M, Q, H)
@@ -54,8 +55,11 @@ await generateQRCode(
 # Basic usage
 node cli.js "https://example.com"
 
-# Custom output path
-node cli.js "Hello World" ./output/hello.png
+# Generate SVG format
+node cli.js "Hello World" hello.svg
+
+# Use format option
+node cli.js "GitHub" github --format svg
 
 # Advanced options
 node cli.js "https://example.com" qr.png --width 600 --margin 4 --error H
@@ -66,14 +70,39 @@ node cli.js "Test" test.png --dark "#FF0000" --light "#FFFFFF"
 
 ### CLI Options
 
-| Option | Short | Description | Default |
-|--------|-------|-------------|---------|
-| `--width` | `-w` | QR code width in pixels | 400 |
-| `--margin` | `-m` | Margin size | 2 |
-| `--error` | `-e` | Error correction level (L, M, Q, H) | H |
-| `--dark` | `-d` | Dark color (hex) | #000000 |
-| `--light` | `-l` | Light color (hex) | #FFFFFF |
-| `--help` | `-h` | Show help message | - |
+| Option     | Short | Description                         | Default     |
+| ---------- | ----- | ----------------------------------- | ----------- |
+| `--width`  | `-w`  | QR code width in pixels             | 400         |
+| `--margin` | `-m`  | Margin size                         | 2           |
+| `--error`  | `-e`  | Error correction level (L, M, Q, H) | H           |
+| `--dark`   | `-d`  | Dark color (hex)                    | #000000     |
+| `--light`  | `-l`  | Light color (hex)                   | #FFFFFF     |
+| `--format` | `-f`  | Output format (png, svg)            | auto-detect |
+| `--help`   | `-h`  | Show help message                   | -           |
+
+## Output Formats
+
+### PNG Format
+
+- **Best for**: Web display, printing, sharing
+- **Pros**: Universal support, good compression
+- **Cons**: Fixed resolution, larger file sizes
+
+### SVG Format
+
+- **Best for**: Web integration, scalable graphics, professional printing
+- **Pros**: Infinitely scalable, smaller file sizes, crisp at any size
+- **Cons**: Limited support in some older applications
+
+```bash
+# Auto-detect format from extension
+node cli.js "Hello" output.svg    # Creates SVG
+node cli.js "Hello" output.png    # Creates PNG
+
+# Explicit format specification
+node cli.js "Hello" output --format svg   # Creates output.svg
+node cli.js "Hello" output --format png   # Creates output.png
+```
 
 ## Configuration
 
@@ -118,12 +147,12 @@ await generateQRCode('https://example.com', 'qr.png', config);
 
 ### Error Correction Levels
 
-| Level | Recovery | Description |
-|-------|----------|-------------|
-| L | ~7% | Low |
-| M | ~15% | Medium |
-| Q | ~25% | Quartile |
-| H | ~30% | High (recommended) |
+| Level | Recovery | Description        |
+| ----- | -------- | ------------------ |
+| L     | ~7%      | Low                |
+| M     | ~15%     | Medium             |
+| Q     | ~25%     | Quartile           |
+| H     | ~30%     | High (recommended) |
 
 ## API Reference
 
@@ -151,10 +180,10 @@ console.log(`QR code saved to: ${path}`);
 ### Utility Functions
 
 ```javascript
-const { 
-  isValidUrl, 
-  validateParameters, 
-  applyTheme, 
+const {
+  isValidUrl,
+  validateParameters,
+  applyTheme,
   applySize,
   generateFilename 
 } = require('./utils');
@@ -212,7 +241,7 @@ const wifiConfig = 'WIFI:T:WPA;S:MyNetwork;P:MyPassword;H:false;';
 
 await generateQRCode(wifiConfig, './wifi-qr.png', {
   width: 400,
-  margin: 2
+  margin: 2,
 });
 ```
 

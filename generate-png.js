@@ -4,15 +4,18 @@ const config = require('./config');
 const { validateParameters, ensureDirectoryExists, getFileInfo, isValidUrl, formatConfig } = require('./utils');
 
 /**
- * Generates a QR code and saves it as a PNG file
+ * Generates a QR code and saves it as a PNG or SVG file
  * @param {string} text - Text or URL to encode
- * @param {string} outputPath - Path where the PNG file will be saved
+ * @param {string} outputPath - Path where the file will be saved
  * @param {Object} customConfig - Optional custom configuration
  * @returns {Promise<string>} - Path to the generated file
  */
 async function generateQRCode(text, outputPath, customConfig = {}) {
-  // Merge with default configuration
-  const qrConfig = { ...config.defaults, ...customConfig };
+  // Detect format from file extension
+  const isSVG = outputPath.toLowerCase().endsWith(".svg");
+
+  // Merge with default configuration and set type
+  const qrConfig = { ...config.defaults, ...customConfig, type: isSVG ? 'svg' : 'png' };
 
   // Validate all parameters
   validateParameters(text, outputPath, qrConfig);
@@ -27,12 +30,20 @@ async function generateQRCode(text, outputPath, customConfig = {}) {
     await ensureDirectoryExists(outputPath);
 
     // Generate QR code
-    console.log('🔲 Generating QR code...');
+    console.log(`🔲 Generating ${isSVG ? 'SVG' : 'PNG'} QR code...`);
     console.log(`📝 Text: ${text.length > 50 ? text.substring(0, 50) + '...' : text}`);
     console.log(`📁 Output: ${outputPath}`);
     console.log(`🔧 Configuration:\n${formatConfig(qrConfig)}`);
 
-    await QRCode.toFile(outputPath, text, qrConfig);
+    if (isSVG) {
+      // Generate SVG
+      const svgString = await QRCode.toString(text, qrConfig);
+      const fs = require('fs').promises;
+      await fs.writeFile(outputPath, svgString);
+    } else {
+      // Generate PNG
+      await QRCode.toFile(outputPath, text, qrConfig);
+    }
 
     // Get file information
     const fileInfo = await getFileInfo(outputPath);
